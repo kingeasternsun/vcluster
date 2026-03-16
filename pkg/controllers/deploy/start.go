@@ -25,7 +25,8 @@ func RegisterInitManifestsController(controllerCtx *synccontext.ControllerContex
 	}
 
 	var helmBinaryPath string
-	if controllerCtx != nil && controllerCtx.Config != nil && len(controllerCtx.Config.Experimental.Deploy.VCluster.Helm) > 0 {
+	if controllerCtx != nil && controllerCtx.Config != nil && len(controllerCtx.Config.Experimental.Deploy.VCluster.Helm) > 0 &&
+		(!controllerCtx.Config.Experimental.Deploy.VCluster.HelmDisabled) {
 		helmBinaryPath, err = helmdownloader.GetHelmBinaryPath(controllerCtx, log.GetInstance())
 		if err != nil {
 			return err
@@ -43,6 +44,11 @@ func RegisterInitManifestsController(controllerCtx *synccontext.ControllerContex
 	err = deployer.DeployInitManifests(controllerCtx, controllerCtx.Config)
 	if err != nil {
 		return fmt.Errorf("error deploying experimental.deploy.vCluster.manifests: %w", err)
+	}
+
+	if controllerCtx.Config.Experimental.Deploy.VCluster.HelmDisabled {
+		klog.Info("experimental.deploy.vCluster.helm is disabled, skipping helm chart deployment")
+		return nil
 	}
 
 	// deploy helm charts

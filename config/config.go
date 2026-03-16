@@ -3258,6 +3258,9 @@ type ExperimentalDeployVCluster struct {
 	// ManifestsTemplate is a Kubernetes manifest template that will be rendered with vCluster values before applying it within the virtual cluster.
 	ManifestsTemplate string `json:"manifestsTemplate,omitempty"`
 
+	// HelmDisabled defines if Helm chart deployment should be disabled. This will disable all Helm charts specified in the Helm field.
+	HelmDisabled bool `json:"helmDisabled,omitempty"`
+
 	// Helm are Helm charts that should get deployed into the virtual cluster
 	Helm []ExperimentalDeployHelm `json:"helm,omitempty"`
 }

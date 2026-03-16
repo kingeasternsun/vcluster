@@ -233,6 +233,11 @@ func (r *Deployer) ProcessInitManifests(ctx context.Context, vConfig *config.Vir
 }
 
 func (r *Deployer) ProcessHelmChart(ctx context.Context, vConfig *config.VirtualClusterConfig, configMap *corev1.ConfigMap) error {
+	if vConfig.Experimental.Deploy.VCluster.HelmDisabled {
+		r.Log.Infof("experimental.deploy.vCluster.helm is disabled, skipping helm chart deployment")
+		return nil
+	}
+
 	statusMap, err := r.getStatusMap(configMap)
 	if err != nil {
 		return err
